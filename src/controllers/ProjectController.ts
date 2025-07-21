@@ -20,4 +20,53 @@ export class ProjectController {
       console.log(error);
     }
   };
+
+  static readonly getProjectById = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    try {
+      const project = await Project.findById(id);
+
+      if (!project) {
+        const error = new Error("Proyecto no encontrado");
+        return res.status(404).json({ error: error.message });
+      }
+      res.json(project);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  static readonly updateProject = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    try {
+      const project = await Project.findByIdAndUpdate(id, req.body);
+
+      if (!project) {
+        const error = new Error("Proyecto no encontrado");
+        return res.status(404).json({ error: error.message });
+      }
+
+      await project.save();
+      res.status(201).send("Proyecto Actualizado Correctamente");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  static readonly deleteProject = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    try {
+      const project = await Project.findById(id);
+
+      if (!project) {
+        const error = new Error("Proyecto no encontrado");
+        return res.status(404).json({ error: error.message });
+      }
+
+      await project.deleteOne();
+      res.send("Proyecto Eliminado Correctamente");
+    } catch (error) {
+      console.log(error);
+    }
+  };
 }
