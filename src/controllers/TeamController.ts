@@ -14,7 +14,7 @@ export class teamMemberController {
       return res.status(404).json({ error: error.message });
     }
 
-    res.json({ user });
+    res.json(user);
   };
 
   static getProjectTeam = async (req: Request, res: Response) => {
