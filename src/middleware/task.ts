@@ -1,5 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import Task, { ITask } from "../models/Task";
+import { toString } from "express-validator/lib/utils";
 
 declare global {
   namespace Express {
@@ -36,6 +37,18 @@ export async function taskBelongsToProject(
   next: NextFunction
 ) {
   if (req.task.project.toString() !== req.project.id.toString()) {
+    const error = new Error("Acción no válida");
+    return res.status(403).json({ error: error.message });
+  }
+  next();
+}
+
+export async function hasAuthorization(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  if (req.user.id.toString() !== req.project.manager.toString()) {
     const error = new Error("Acción no válida");
     return res.status(403).json({ error: error.message });
   }
