@@ -86,4 +86,23 @@ router.put(
   AuthController.updateProfile
 );
 
+router.post(
+  "/update-password",
+  authenticate,
+  body("current_password")
+    .notEmpty()
+    .withMessage("El password actual no puede ir vacio"),
+  body("password")
+    .isLength({ min: 8 })
+    .withMessage("El password es muy corto minimo 8 caracteres"),
+  body("password_confirmation").custom((value, { req }) => {
+    if (value !== req.body.password) {
+      throw new Error("Los passwords no son iguales");
+    }
+    return true;
+  }),
+  handleInputErrors,
+  AuthController.updateCurrentUserPassword
+);
+
 export default router;
